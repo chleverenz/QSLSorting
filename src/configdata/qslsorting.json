@@ -1,0 +1,8 @@
+{
+    "sorters": [
+        { "name": "alphabetic", "regexp": "(.*)" }, { "name": "byfirstnumber", "regexp": "[^0-9]*([0-9]*).*" }
+    ],
+    "combinerlist": [
+        { "callsignpattern": "da-dl", "combinewith": "dl", "comment": "germany" }, { "callsignpattern": "i3", "combinewith": "i", "comment": "italy" }
+    ]
+}

@@ -1,67 +1,539 @@
-var _user$project$QSLSortingAssistant$view = function (model) {
+var _user$project$QSLSortingAssistant$getSetupView = function (setup) {
+	return A2(
+		_elm_lang$html$Html$div,
+		{ctor: '[]'},
+		{
+			ctor: '::',
+			_0: function () {
+				var _p0 = setup;
+				if (_p0.ctor === 'Nothing') {
+					return A2(
+						_elm_lang$html$Html$div,
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html_Attributes$class('nosetupdata'),
+							_1: {ctor: '[]'}
+						},
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html$text('No Setup Data'),
+							_1: {ctor: '[]'}
+						});
+				} else {
+					var _p1 = _p0._0;
+					return A2(
+						_elm_lang$html$Html$div,
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html_Attributes$class('setupdata'),
+							_1: {ctor: '[]'}
+						},
+						{
+							ctor: '::',
+							_0: A2(
+								_elm_lang$html$Html$div,
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html_Attributes$class('sorters'),
+									_1: {ctor: '[]'}
+								},
+								{
+									ctor: '::',
+									_0: A2(
+										_elm_lang$html$Html$div,
+										{ctor: '[]'},
+										{
+											ctor: '::',
+											_0: _elm_lang$html$Html$text('Sorters'),
+											_1: {ctor: '[]'}
+										}),
+									_1: {
+										ctor: '::',
+										_0: A2(
+											_elm_lang$html$Html$table,
+											{
+												ctor: '::',
+												_0: _elm_lang$html$Html_Attributes$class('table'),
+												_1: {ctor: '[]'}
+											},
+											A2(
+												_elm_lang$core$List$map,
+												function (entry) {
+													return A2(
+														_elm_lang$html$Html$tr,
+														{ctor: '[]'},
+														{
+															ctor: '::',
+															_0: A2(
+																_elm_lang$html$Html$td,
+																{ctor: '[]'},
+																{
+																	ctor: '::',
+																	_0: _elm_lang$html$Html$text(entry.name),
+																	_1: {ctor: '[]'}
+																}),
+															_1: {
+																ctor: '::',
+																_0: A2(
+																	_elm_lang$html$Html$td,
+																	{ctor: '[]'},
+																	{
+																		ctor: '::',
+																		_0: _elm_lang$html$Html$text(entry.regexp),
+																		_1: {ctor: '[]'}
+																	}),
+																_1: {ctor: '[]'}
+															}
+														});
+												},
+												_p1.sorters)),
+										_1: {ctor: '[]'}
+									}
+								}),
+							_1: {
+								ctor: '::',
+								_0: A2(
+									_elm_lang$html$Html$div,
+									{
+										ctor: '::',
+										_0: _elm_lang$html$Html_Attributes$class('combiners'),
+										_1: {ctor: '[]'}
+									},
+									{
+										ctor: '::',
+										_0: A2(
+											_elm_lang$html$Html$div,
+											{ctor: '[]'},
+											{
+												ctor: '::',
+												_0: _elm_lang$html$Html$text('Combiners'),
+												_1: {ctor: '[]'}
+											}),
+										_1: {
+											ctor: '::',
+											_0: A2(
+												_elm_lang$html$Html$table,
+												{
+													ctor: '::',
+													_0: _elm_lang$html$Html_Attributes$class('table'),
+													_1: {ctor: '[]'}
+												},
+												A2(
+													_elm_lang$core$List$map,
+													function (entry) {
+														return A2(
+															_elm_lang$html$Html$tr,
+															{ctor: '[]'},
+															{
+																ctor: '::',
+																_0: A2(
+																	_elm_lang$html$Html$td,
+																	{ctor: '[]'},
+																	{
+																		ctor: '::',
+																		_0: _elm_lang$html$Html$text(entry.callsignpattern),
+																		_1: {ctor: '[]'}
+																	}),
+																_1: {
+																	ctor: '::',
+																	_0: A2(
+																		_elm_lang$html$Html$td,
+																		{ctor: '[]'},
+																		{
+																			ctor: '::',
+																			_0: _elm_lang$html$Html$text(entry.combinewith),
+																			_1: {ctor: '[]'}
+																		}),
+																	_1: {
+																		ctor: '::',
+																		_0: A2(
+																			_elm_lang$html$Html$td,
+																			{ctor: '[]'},
+																			{
+																				ctor: '::',
+																				_0: _elm_lang$html$Html$text(entry.comment),
+																				_1: {ctor: '[]'}
+																			}),
+																		_1: {ctor: '[]'}
+																	}
+																}
+															});
+													},
+													_p1.combinerlist)),
+											_1: {ctor: '[]'}
+										}
+									}),
+								_1: {ctor: '[]'}
+							}
+						});
+				}
+			}(),
+			_1: {ctor: '[]'}
+		});
+};
+var _user$project$QSLSortingAssistant$findCombinerEntry = F2(
+	function (combinerlist, cs) {
+		var _p2 = combinerlist;
+		if (_p2.ctor === 'Nothing') {
+			return _elm_lang$core$Maybe$Nothing;
+		} else {
+			return _elm_lang$core$Maybe$Just(
+				A2(
+					_elm_lang$core$List$filter,
+					function (s) {
+						return _elm_lang$core$Native_Utils.eq(s.callsignpattern, cs);
+					},
+					_p2._0));
+		}
+	});
+var _user$project$QSLSortingAssistant$getCombinerdata = function (setup) {
+	var _p3 = setup;
+	if (_p3.ctor === 'Nothing') {
+		return _elm_lang$core$Maybe$Nothing;
+	} else {
+		return _p3._0.combinerlist;
+	}
+};
+var _user$project$QSLSortingAssistant$getSetUpdata = function (setup) {
+	var _p4 = setup;
+	if (_p4.ctor === 'Nothing') {
+		return _elm_lang$core$Maybe$Nothing;
+	} else {
+		return _p4._0;
+	}
+};
+var _user$project$QSLSortingAssistant$onKeyDown = function (tagger) {
+	return A2(
+		_elm_lang$html$Html_Events$on,
+		'keydown',
+		A2(_elm_lang$core$Json_Decode$map, tagger, _elm_lang$html$Html_Events$keyCode));
+};
+var _user$project$QSLSortingAssistant$renderCallSign = function (cs) {
 	return A2(
 		_elm_lang$html$Html$div,
 		{
 			ctor: '::',
-			_0: _elm_lang$html$Html_Attributes$class('content'),
+			_0: _elm_lang$html$Html_Attributes$class('callsign'),
 			_1: {ctor: '[]'}
 		},
 		{
 			ctor: '::',
-			_0: A2(
-				_elm_lang$html$Html$h1,
-				{ctor: '[]'},
-				{
-					ctor: '::',
-					_0: _elm_lang$html$Html$text('Photo Groove'),
-					_1: {ctor: '[]'}
-				}),
-			_1: {
-				ctor: '::',
-				_0: A2(
-					_elm_lang$html$Html$div,
-					{
-						ctor: '::',
-						_0: _elm_lang$html$Html_Attributes$id('thumbnails'),
-						_1: {ctor: '[]'}
-					},
-					{
-						ctor: '::',
-						_0: A2(
-							_elm_lang$html$Html$img,
-							{
-								ctor: '::',
-								_0: _elm_lang$html$Html_Attributes$src('http://elm-in-action.com/1.jpeg'),
-								_1: {ctor: '[]'}
-							},
-							{ctor: '[]'}),
-						_1: {
-							ctor: '::',
-							_0: A2(
-								_elm_lang$html$Html$img,
-								{
-									ctor: '::',
-									_0: _elm_lang$html$Html_Attributes$src('http://elm-in-action.com/1.jpeg'),
-									_1: {ctor: '[]'}
-								},
-								{ctor: '[]'}),
-							_1: {
-								ctor: '::',
-								_0: A2(
-									_elm_lang$html$Html$img,
-									{
-										ctor: '::',
-										_0: _elm_lang$html$Html_Attributes$src('http://elm-in-action.com/1.jpeg'),
-										_1: {ctor: '[]'}
-									},
-									{ctor: '[]'}),
-								_1: {ctor: '[]'}
-							}
-						}
-					}),
-				_1: {ctor: '[]'}
-			}
+			_0: _elm_lang$html$Html$text(cs.callsign),
+			_1: {ctor: '[]'}
 		});
 };
-var _user$project$QSLSortingAssistant$main = _elm_lang$virtual_dom$Native_VirtualDom.staticProgram(
-	_user$project$QSLSortingAssistant$view('no model yet'));
+var _user$project$QSLSortingAssistant$renderCallSignList = function (model) {
+	return A2(_elm_lang$core$List$map, _user$project$QSLSortingAssistant$renderCallSign, model.callSignList);
+};
+var _user$project$QSLSortingAssistant$aSpceificClassDiv = F2(
+	function (className, htmlnodes) {
+		return A2(
+			_elm_lang$html$Html$div,
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html_Attributes$class(className),
+				_1: {ctor: '[]'}
+			},
+			htmlnodes);
+	});
+var _user$project$QSLSortingAssistant$aRowDiv = _user$project$QSLSortingAssistant$aSpceificClassDiv('row');
+var _user$project$QSLSortingAssistant$a6coldiv = _user$project$QSLSortingAssistant$aSpceificClassDiv('col-sm-6');
+var _user$project$QSLSortingAssistant$a12coldiv = _user$project$QSLSortingAssistant$aSpceificClassDiv('col-sm-12');
+var _user$project$QSLSortingAssistant$initialData = {
+	currentCallsign: '',
+	callSignList: {ctor: '[]'},
+	labels: {ctor: '[]'},
+	sortSetup: _elm_lang$core$Maybe$Nothing,
+	setupError: _elm_lang$core$Maybe$Nothing,
+	csvalid: 0,
+	version: '0.0.0.1'
+};
+var _user$project$QSLSortingAssistant$ceptlisturl = './configdata/qslsorting.json';
+var _user$project$QSLSortingAssistant$Combiner = F3(
+	function (a, b, c) {
+		return {callsignpattern: a, combinewith: b, comment: c};
+	});
+var _user$project$QSLSortingAssistant$combinerdecoder = A4(
+	_elm_lang$core$Json_Decode$map3,
+	F3(
+		function (a, b, c) {
+			return A3(_user$project$QSLSortingAssistant$Combiner, a, b, c);
+		}),
+	A2(_elm_lang$core$Json_Decode$field, 'callsignpattern', _elm_lang$core$Json_Decode$string),
+	A2(_elm_lang$core$Json_Decode$field, 'combinewith', _elm_lang$core$Json_Decode$string),
+	A2(_elm_lang$core$Json_Decode$field, 'comment', _elm_lang$core$Json_Decode$string));
+var _user$project$QSLSortingAssistant$Sorter = F2(
+	function (a, b) {
+		return {name: a, regexp: b};
+	});
+var _user$project$QSLSortingAssistant$sorterdecoder = A3(
+	_elm_lang$core$Json_Decode$map2,
+	F2(
+		function (a, b) {
+			return A2(_user$project$QSLSortingAssistant$Sorter, a, b);
+		}),
+	A2(_elm_lang$core$Json_Decode$field, 'name', _elm_lang$core$Json_Decode$string),
+	A2(_elm_lang$core$Json_Decode$field, 'regexp', _elm_lang$core$Json_Decode$string));
+var _user$project$QSLSortingAssistant$SortSetup = F2(
+	function (a, b) {
+		return {sorters: a, combinerlist: b};
+	});
+var _user$project$QSLSortingAssistant$setupdecoder = A3(
+	_elm_lang$core$Json_Decode$map2,
+	F2(
+		function (a, b) {
+			return A2(_user$project$QSLSortingAssistant$SortSetup, a, b);
+		}),
+	A2(
+		_elm_lang$core$Json_Decode$field,
+		'sorters',
+		_elm_lang$core$Json_Decode$list(_user$project$QSLSortingAssistant$sorterdecoder)),
+	A2(
+		_elm_lang$core$Json_Decode$field,
+		'combinerlist',
+		_elm_lang$core$Json_Decode$list(_user$project$QSLSortingAssistant$combinerdecoder)));
+var _user$project$QSLSortingAssistant$CallsignEntry = F4(
+	function (a, b, c, d) {
+		return {callsign: a, group: b, sortvalue: c, isValid: d};
+	});
+var _user$project$QSLSortingAssistant$GETDATA = {ctor: 'GETDATA'};
+var _user$project$QSLSortingAssistant$GETSORTSETUP = function (a) {
+	return {ctor: 'GETSORTSETUP', _0: a};
+};
+var _user$project$QSLSortingAssistant$initialCmd = A2(
+	_elm_lang$http$Http$send,
+	_user$project$QSLSortingAssistant$GETSORTSETUP,
+	A2(_elm_lang$http$Http$get, _user$project$QSLSortingAssistant$ceptlisturl, _user$project$QSLSortingAssistant$setupdecoder));
+var _user$project$QSLSortingAssistant$update = F2(
+	function (msg, model) {
+		var _p5 = msg;
+		switch (_p5.ctor) {
+			case 'CALLSIGNENTERED':
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{currentCallsign: _p5._0}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			case 'KEYPRESSED':
+				return _elm_lang$core$Native_Utils.eq(_p5._0, 13) ? {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{
+							callSignList: A2(
+								_elm_lang$core$List$append,
+								model.callSignList,
+								{
+									ctor: '::',
+									_0: A4(_user$project$QSLSortingAssistant$CallsignEntry, model.currentCallsign, '', _elm_lang$core$Maybe$Nothing, false),
+									_1: {ctor: '[]'}
+								}),
+							currentCallsign: ''
+						}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				} : {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+			case 'GETSORTSETUP':
+				if (_p5._0.ctor === 'Ok') {
+					return {
+						ctor: '_Tuple2',
+						_0: _elm_lang$core$Native_Utils.update(
+							model,
+							{
+								sortSetup: _elm_lang$core$Maybe$Just(_p5._0._0),
+								setupError: _elm_lang$core$Maybe$Nothing
+							}),
+						_1: _elm_lang$core$Platform_Cmd$none
+					};
+				} else {
+					return {
+						ctor: '_Tuple2',
+						_0: _elm_lang$core$Native_Utils.update(
+							model,
+							{
+								setupError: _elm_lang$core$Maybe$Just('unable to load ceptlist from server')
+							}),
+						_1: _elm_lang$core$Platform_Cmd$none
+					};
+				}
+			default:
+				return {ctor: '_Tuple2', _0: model, _1: _user$project$QSLSortingAssistant$initialCmd};
+		}
+	});
+var _user$project$QSLSortingAssistant$KEYPRESSED = function (a) {
+	return {ctor: 'KEYPRESSED', _0: a};
+};
+var _user$project$QSLSortingAssistant$CALLSIGNENTERED = function (a) {
+	return {ctor: 'CALLSIGNENTERED', _0: a};
+};
+var _user$project$QSLSortingAssistant$inputgenerator = function (model) {
+	return {
+		ctor: '::',
+		_0: A2(
+			_elm_lang$html$Html$div,
+			{ctor: '[]'},
+			{
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$input,
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html_Events$onInput(_user$project$QSLSortingAssistant$CALLSIGNENTERED),
+						_1: {
+							ctor: '::',
+							_0: _user$project$QSLSortingAssistant$onKeyDown(_user$project$QSLSortingAssistant$KEYPRESSED),
+							_1: {
+								ctor: '::',
+								_0: _elm_lang$html$Html_Attributes$value(model.currentCallsign),
+								_1: {
+									ctor: '::',
+									_0: _elm_lang$html$Html_Attributes$placeholder('enter callsign'),
+									_1: {
+										ctor: '::',
+										_0: _elm_lang$html$Html_Attributes$autofocus(true),
+										_1: {ctor: '[]'}
+									}
+								}
+							}
+						}
+					},
+					{ctor: '[]'}),
+				_1: {
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$div,
+						{ctor: '[]'},
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html$text(
+								_elm_lang$core$Basics$toString(model.csvalid)),
+							_1: {ctor: '[]'}
+						}),
+					_1: {ctor: '[]'}
+				}
+			}),
+		_1: {ctor: '[]'}
+	};
+};
+var _user$project$QSLSortingAssistant$view = function (model) {
+	var _p6 = model.setupError;
+	if (_p6.ctor === 'Just') {
+		return A2(
+			_elm_lang$html$Html$div,
+			{ctor: '[]'},
+			{
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$span,
+					{ctor: '[]'},
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html$text(_p6._0),
+						_1: {ctor: '[]'}
+					}),
+				_1: {
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$span,
+						{ctor: '[]'},
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html$text(_user$project$QSLSortingAssistant$ceptlisturl),
+							_1: {ctor: '[]'}
+						}),
+					_1: {ctor: '[]'}
+				}
+			});
+	} else {
+		return A2(
+			_user$project$QSLSortingAssistant$aSpceificClassDiv,
+			'container',
+			{
+				ctor: '::',
+				_0: _user$project$QSLSortingAssistant$aRowDiv(
+					{
+						ctor: '::',
+						_0: _user$project$QSLSortingAssistant$a12coldiv(
+							{
+								ctor: '::',
+								_0: A2(
+									_elm_lang$html$Html$h1,
+									{ctor: '[]'},
+									{
+										ctor: '::',
+										_0: _elm_lang$html$Html$text('CEPT List evaluation'),
+										_1: {ctor: '[]'}
+									}),
+								_1: {
+									ctor: '::',
+									_0: A2(
+										_elm_lang$html$Html$button,
+										{
+											ctor: '::',
+											_0: _elm_lang$html$Html_Events$onClick(_user$project$QSLSortingAssistant$GETDATA),
+											_1: {ctor: '[]'}
+										},
+										{
+											ctor: '::',
+											_0: _elm_lang$html$Html$text(model.currentCallsign),
+											_1: {ctor: '[]'}
+										}),
+									_1: {ctor: '[]'}
+								}
+							}),
+						_1: {ctor: '[]'}
+					}),
+				_1: {
+					ctor: '::',
+					_0: _user$project$QSLSortingAssistant$aRowDiv(
+						{
+							ctor: '::',
+							_0: _user$project$QSLSortingAssistant$a6coldiv(
+								_user$project$QSLSortingAssistant$renderCallSignList(model)),
+							_1: {
+								ctor: '::',
+								_0: _user$project$QSLSortingAssistant$a6coldiv(
+									_user$project$QSLSortingAssistant$inputgenerator(model)),
+								_1: {ctor: '[]'}
+							}
+						}),
+					_1: {
+						ctor: '::',
+						_0: _user$project$QSLSortingAssistant$getSetupView(model.sortSetup),
+						_1: {
+							ctor: '::',
+							_0: _user$project$QSLSortingAssistant$aRowDiv(
+								{
+									ctor: '::',
+									_0: _user$project$QSLSortingAssistant$a12coldiv(
+										{
+											ctor: '::',
+											_0: A2(
+												_elm_lang$html$Html$h1,
+												{ctor: '[]'},
+												{
+													ctor: '::',
+													_0: _elm_lang$html$Html$text(model.version),
+													_1: {ctor: '[]'}
+												}),
+											_1: {ctor: '[]'}
+										}),
+									_1: {ctor: '[]'}
+								}),
+							_1: {ctor: '[]'}
+						}
+					}
+				}
+			});
+	}
+};
+var _user$project$QSLSortingAssistant$main = _elm_lang$html$Html$program(
+	{
+		init: {ctor: '_Tuple2', _0: _user$project$QSLSortingAssistant$initialData, _1: _user$project$QSLSortingAssistant$initialCmd},
+		view: _user$project$QSLSortingAssistant$view,
+		update: _user$project$QSLSortingAssistant$update,
+		subscriptions: function (model) {
+			return _elm_lang$core$Platform_Sub$none;
+		}
+	})();
