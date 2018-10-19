@@ -13,7 +13,11 @@
     <div id="elm-area"></div>
     <script src="../elm.js"></script>
     <script>
-        Elm.QSLSortingAssistant.embed(document.getElementById("elm-area"));
+        var app = Elm.QSLSortingAssistant.init({
+          node: document.getElementById('elm-area'),
+        flags: 0
+            });
+        //Elm.QSLSortingAssistant.embed(document.getElementById("elm-area"));
     </script>
 </body>
 

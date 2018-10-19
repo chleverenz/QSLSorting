@@ -1,6 +1,7 @@
 module QSLSortingAssistant exposing (..)
 
 import Html exposing (..)
+import Browser exposing (document)
 import Html.Attributes exposing (..)
 import Html.Events exposing (on, keyCode, onClick, onInput)
 import Json.Decode as JDEC exposing (..)
@@ -9,28 +10,39 @@ import Http
 ceptlisturl : String
 ceptlisturl =  "./configdata/qslsorting.json"
 
-type alias Combiner = {
+type alias Combiner = 
+    {
     callsignpattern : String
     , combinewith : String
     , comment : String
-}
+    }
 
 type alias Sorter = {
     name : String
     , regexp : String
-}    
+    }    
 
 type alias SortSetup = {
     sorters : List Sorter
     , combinerlist : List Combiner
-}
+    }
 
 type alias CallsignEntry = {
     callsign : String
     , group : String
     , sortvalue : Maybe String
     , isValid : Bool
-}
+    }
+
+type alias QSLSortModel = { 
+    callSignList : List CallsignEntry 
+    , currentCallsign : String 
+    , labels : List String 
+    , sortSetup : Maybe SortSetup
+    , setupError : Maybe String
+    , csvalid : Int
+    , version : String 
+    }
 
 combinerdecoder : JDEC.Decoder Combiner
 combinerdecoder =
@@ -60,14 +72,13 @@ type Msg =
     | GETSORTSETUP (Result Http.Error SortSetup)
     | GETDATA
 
-initialData : { callSignList : List CallsignEntry , currentCallsign : String , labels : List c , sortSetup : Maybe SortSetup, setupError : Maybe String, csvalid : Int, version : String }
+initialData : QSLSortModel
 
 initialData = 
-    {
+    {   
         currentCallsign = ""
         , callSignList = []
         , labels = [
-
         ]
         , sortSetup = Nothing
         , setupError = Nothing
@@ -96,12 +107,12 @@ renderCallSignList : { a | callSignList : List CallsignEntry } -> List (Html msg
 renderCallSignList model =
     List.map renderCallSign model.callSignList
 
-inputgenerator : { b | csvalid : a, currentCallsign : String } -> List (Html Msg)
+inputgenerator : { b | csvalid : Int, currentCallsign : String } -> List (Html Msg)
 inputgenerator model =
     [
         div [] [
             input [onInput CALLSIGNENTERED, onKeyDown KEYPRESSED, Html.Attributes.value model.currentCallsign, placeholder "enter callsign", autofocus True] []
-            , div [] [text (toString model.csvalid)]
+            , div [] [text (String.fromInt model.csvalid)]
         ]
     ]
 
@@ -187,33 +198,47 @@ getSetupView setup =
 view model =
     case model.setupError of
         Just errmesg -> 
-            div [] [
-                span [] [text errmesg]
-                , span [] [text ceptlisturl]
-            ]
-        Nothing ->
-            aSpceificClassDiv "container" [
-                    aRowDiv [
-                        a12coldiv [
-                            h1 [] [ text "CEPT List evaluation" ]
-                            , button [onClick GETDATA] [text model.currentCallsign]
-                        ]
-                    ]
-                    , aRowDiv [
-                        a6coldiv (renderCallSignList model)
-                        , a6coldiv (inputgenerator model)
-                    ]
-                    , getSetupView model.sortSetup
-                    , aRowDiv [ a12coldiv [
-                        h1 [] [text model.version]
-                    ]
+            { 
+                title = ""
+                , body = [
+                    div [] [
+                        span [] [text errmesg]
+                        , span [] [text ceptlisturl]
                     ]
                 ]
+            }
+        Nothing ->
+            { 
+                title = "w"
+                , body = [
+                    aSpceificClassDiv "container" [
+                        aRowDiv [
+                            a12coldiv [
+                                h1 [] [ text "CEPT List evaluation" ]
+                                , button [onClick GETDATA] [text model.currentCallsign]
+                            ]
+                        ]
+                        , aRowDiv [
+                            a6coldiv (renderCallSignList model)
+                            , a6coldiv (inputgenerator model)
+                        ]
+                        , getSetupView model.sortSetup
+                        , aRowDiv [ a12coldiv [
+                            h1 [] [text model.version]
+                        ]
+                        ]
+                    ]
+                ]
+            }
+
+init : Int -> (QSLSortModel, Cmd Msg)
+init flags = 
+    (initialData, initialCmd)
 
 main = 
-    Html.program
+    Browser.document
         {
-            init = (initialData, initialCmd)
+            init = init
             , view = view
             , update = update
             , subscriptions = (\model -> Sub.none)
