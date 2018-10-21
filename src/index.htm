@@ -7,18 +7,21 @@
 
     <link rel="stylesheet" type="text/css" href="assets/bootstrap.min.css" />
     <link rel="stylesheet" type="text/css" href="assets/QSLSortingAssistant.css" />
+    <script src="../elm.min.js"></script>
 </head>
 
 <body>
+    <div>abvove</div>
     <div id="elm-area"></div>
-    <script src="../elm.js"></script>
+    <div>below</div>
     <script>
         var app = Elm.QSLSortingAssistant.init({
-                node: document.getElementById('elm-area')
-                , flags: 0
-            });
+            node: document.getElementById('elm-area'),
+            flags: 0
+        });
         //Elm.QSLSortingAssistant.embed(document.getElementById("elm-area"));
     </script>
+    <div>at end before body end</div>
 </body>
 
 </html>

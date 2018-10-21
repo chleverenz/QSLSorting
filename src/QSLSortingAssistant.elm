@@ -15,12 +15,13 @@ type alias Combiner =
     callsignpattern : String
     , combinewith : String
     , comment : String
+    , sort : Maybe String
     }
 
 type alias Sorter = {
     name : String
     , regexp : String
-    }    
+    }
 
 type alias SortSetup = {
     sorters : List Sorter
@@ -46,11 +47,12 @@ type alias QSLSortModel = {
 
 combinerdecoder : JDEC.Decoder Combiner
 combinerdecoder =
-  map3
-    (\a b c -> Combiner a b c)
+  map4
+    (\a b c d -> Combiner a b c d)
     (field "callsignpattern" string)
     (field "combinewith" string)
     (field "comment" string)
+    (maybe (field "sort" string))
 
 sorterdecoder : JDEC.Decoder Sorter
 sorterdecoder =
@@ -150,7 +152,7 @@ findCombinerEntry combinerlist cs =
         Just aList ->
             Just (List.filter (\s -> s.callsignpattern == cs) aList)
    
-update : Msg -> { a | callSignList : List CallsignEntry , currentCallsign : String , setupError : Maybe String , sortSetup : Maybe { combinerlist : List { callsignpattern : String , combinewith : String , comment : String } , sorters : List { name : String, regexp : String } } } -> ( { a | callSignList : List CallsignEntry , currentCallsign : String , setupError : Maybe String , sortSetup : Maybe { combinerlist : List { callsignpattern : String , combinewith : String , comment : String } , sorters : List { name : String, regexp : String } } } , Cmd Msg )
+update : Msg -> { a | callSignList : List CallsignEntry , currentCallsign : String , setupError : Maybe String , sortSetup : Maybe { combinerlist : List Combiner  , sorters : List Sorter } } -> ( { a | callSignList : List CallsignEntry , currentCallsign : String , setupError : Maybe String , sortSetup : Maybe { combinerlist : List Combiner , sorters : List Sorter } } , Cmd Msg )
 update msg model =
     case msg of
         CALLSIGNENTERED cs -> 
@@ -190,59 +192,81 @@ getSetupView setup =
                     ]
                     , div [class "combiners"] [
                         div [] [text "Combiners"]
-                        , table [class "table"] (List.map (\entry -> tr [] [td [] [text entry.callsignpattern], td [] [text entry.combinewith], td [] [text entry.comment]])  x.combinerlist )
-                    ]
+                        , table [class "table"] (List.map (
+                            \entry -> 
+                                tr [] 
+                                    [
+                                        td [] [text entry.callsignpattern]
+                                        , td [] [text entry.combinewith]
+                                        , td [] [text entry.comment]
+                                        , td [] [text (case entry.sort of 
+                                                Nothing -> "no nort"
+                                                Just srot -> srot
+                                        )]
+                                    ]
+                            )
+                            x.combinerlist )
+                        ]
                 ]
     ]
 
-view model =
+viewElement model =
     case model.setupError of
         Just errmesg -> 
-            { 
-                title = ""
-                , body = [
-                    div [] [
-                        span [] [text errmesg]
-                        , span [] [text ceptlisturl]
-                    ]
+                div [] [
+                    span [] [text errmesg]
+                    , span [] [text ceptlisturl]
                 ]
-            }
         Nothing ->
-            { 
-                title = "w"
-                , body = [
-                    aSpceificClassDiv "container" [
-                        aRowDiv [
-                            a12coldiv [
-                                h1 [] [ text "CEPT List evaluation" ]
-                                , button [onClick GETDATA] [text model.currentCallsign]
-                            ]
-                        ]
-                        , aRowDiv [
-                            a6coldiv (renderCallSignList model)
-                            , a6coldiv (inputgenerator model)
-                        ]
-                        , getSetupView model.sortSetup
-                        , aRowDiv [ a12coldiv [
-                            h1 [] [text model.version]
-                        ]
-                        ]
+            aSpceificClassDiv "container" [
+                aRowDiv [
+                    a12coldiv [
+                        h1 [] [ text "CEPT List evaluation" ]
+                        , button [onClick GETDATA] [text model.currentCallsign]
                     ]
                 ]
-            }
+                , aRowDiv [
+                    a6coldiv (renderCallSignList model)
+                    , a6coldiv (inputgenerator model)
+                ]
+                , getSetupView model.sortSetup
+                , aRowDiv [ a12coldiv [
+                        h1 [] [text model.version]
+                    ]
+                ]
+            ]
+
+viewDocument model  =
+    {
+        title  = "atitile"
+        , body = [
+            (viewElement model)
+        ]
+    }
+
 
 init : Int -> (QSLSortModel, Cmd Msg)
 init flags = 
     (initialData, initialCmd)
 
-main = 
+mainDocument = 
     Browser.document
         {
             init = init
-            , view = view
+            , view = viewDocument
+            , update = update
+            , subscriptions = (\model -> Sub.none)
+        }
+         
+mainElement = 
+    Browser.element
+        {
+            init = init
+            , view = viewElement
             , update = update
             , subscriptions = (\model -> Sub.none)
         }
          
 
+main = mainDocument
 
