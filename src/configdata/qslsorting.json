@@ -3,6 +3,9 @@
         { "name": "alphabetic", "regexp": "(.*)" }, { "name": "byfirstnumber", "regexp": "[^0-9]*([0-9]*).*" }
     ],
     "combinerlist": [
-        { "callsignpattern": "da-dl", "combinewith": "dl", "comment": "germany", "sort": "byfirstnumber" }, { "callsignpattern": "i3", "combinewith": "i", "comment": "italy" }, { "callsignpattern": "i4", "combinewith": "i", "comment": "italy" }
+        { "callsignpattern": "da-dl", "countryid": "dl", "comment": "germany" }, { "callsignpattern": "i3", "countryid": "i", "comment": "italy" }, { "callsignpattern": "i4", "countryid": "i", "comment": "italy" }
+    ],
+    "countries": [
+        { "name": "Germany", "id": "dl", "sort": "byfirstnumber" }, { "name": "Italy", "id": "i" }
     ]
 }

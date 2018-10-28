@@ -10,22 +10,29 @@ import Http
 ceptlisturl : String
 ceptlisturl =  "./configdata/qslsorting.json"
 
-type alias Combiner = 
-    {
-    callsignpattern : String
-    , combinewith : String
-    , comment : String
-    , sort : Maybe String
-    }
 
 type alias Sorter = {
     name : String
     , regexp : String
     }
 
+type alias Country = {
+        name : String
+        , id : String
+        , sort : Maybe String
+    }
+
+type alias Combiner = 
+    {
+    callsignpattern : String
+    , countryid : String
+    , comment : String
+    }
+
 type alias SortSetup = {
     sorters : List Sorter
     , combinerlist : List Combiner
+    , countries : List Country 
     }
 
 type alias CallsignEntry = {
@@ -45,14 +52,21 @@ type alias QSLSortModel = {
     , version : String 
     }
 
+countrydecoder : JDEC.Decoder Country
+countrydecoder =
+  map3
+    (\a b c -> Country a b c)
+    (field "name" string)
+    (field "id" string)
+    (maybe (field "sort" string))
+
 combinerdecoder : JDEC.Decoder Combiner
 combinerdecoder =
-  map4
-    (\a b c d -> Combiner a b c d)
+  map3
+    (\a b c -> Combiner a b c)
     (field "callsignpattern" string)
-    (field "combinewith" string)
+    (field "countryid" string)
     (field "comment" string)
-    (maybe (field "sort" string))
 
 sorterdecoder : JDEC.Decoder Sorter
 sorterdecoder =
@@ -63,10 +77,11 @@ sorterdecoder =
 
 setupdecoder : JDEC.Decoder SortSetup
 setupdecoder =
-  JDEC.map2
-    (\a b -> SortSetup a b)
+  JDEC.map3
+    (\a b c -> SortSetup a b c)
     (field "sorters" (JDEC.list sorterdecoder))
     (field "combinerlist" (JDEC.list combinerdecoder))
+    (field "countries" (JDEC.list countrydecoder))
 
 type Msg =
     CALLSIGNENTERED String
@@ -128,47 +143,35 @@ initialCmd =
     |> Http.get ceptlisturl
     |> Http.send GETSORTSETUP
 
-getSetUpdata : Maybe (Maybe a) -> Maybe a
-getSetUpdata setup =
-    case setup of
-        Nothing ->
-            Nothing
-        Just x ->
-            x
-
-getCombinerdata : Maybe { b | combinerlist : Maybe a } -> Maybe a
+getCombinerdata : Maybe SortSetup  -> List Combiner
 getCombinerdata setup =
     case setup of
         Nothing -> 
-            Nothing
+            []
         Just x -> 
             x.combinerlist
 
-findCombinerEntry : Maybe (List { b | callsignpattern : a }) -> a -> Maybe (List { b | callsignpattern : a })
+findCombinerEntry : (List Combiner)  -> String -> Maybe (List Combiner)
 findCombinerEntry combinerlist cs =
-    case combinerlist of
-        Nothing ->
-            Nothing
-        Just aList ->
-            Just (List.filter (\s -> s.callsignpattern == cs) aList)
+    Just (List.filter (\s -> s.callsignpattern == cs) combinerlist)
    
-update : Msg -> { a | callSignList : List CallsignEntry , currentCallsign : String , setupError : Maybe String , sortSetup : Maybe { combinerlist : List Combiner  , sorters : List Sorter } } -> ( { a | callSignList : List CallsignEntry , currentCallsign : String , setupError : Maybe String , sortSetup : Maybe { combinerlist : List Combiner , sorters : List Sorter } } , Cmd Msg )
+update : Msg -> QSLSortModel  -> ( QSLSortModel  , Cmd Msg ) 
 update msg model =
     case msg of
         CALLSIGNENTERED cs -> 
-            ({ model | currentCallsign = cs } , Cmd.none)
+            ( { model | currentCallsign = cs }, Cmd.none)
         KEYPRESSED key ->
             if key == 13 then
                 ({ model | 
                     callSignList = List.append model.callSignList [CallsignEntry model.currentCallsign "" Nothing False]
                     , currentCallsign = ""
---                    , csvalid = (
---                       case (findCombinerEntry (getCombinerdata model.sortSetup) model.currentCallsign) of
---                            Nothing ->
---                                List.length []
---                            Just aList ->
---                                List.length aList
---                        )
+                    , csvalid = (
+                       case (findCombinerEntry (getCombinerdata model.sortSetup) model.currentCallsign) of
+                            Nothing ->
+                                0
+                            Just aList ->
+                                List.length aList
+                        )
                     } , Cmd.none)
             else
                 (model, Cmd.none)
@@ -197,16 +200,17 @@ getSetupView setup =
                                 tr [] 
                                     [
                                         td [] [text entry.callsignpattern]
-                                        , td [] [text entry.combinewith]
+                                        , td [] [text entry.countryid]
                                         , td [] [text entry.comment]
-                                        , td [] [text (case entry.sort of 
-                                                Nothing -> "no nort"
-                                                Just srot -> srot
-                                        )]
                                     ]
                             )
                             x.combinerlist )
                         ]
+--                                         , td [] [text (case entry.sort of 
+--                                                Nothing -> "no nort"
+--                                                Just srot -> srot
+--                                        )]
+
                 ]
     ]
 
