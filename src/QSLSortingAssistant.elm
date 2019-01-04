@@ -27,6 +27,7 @@ type alias Combiner =
     callsignpattern : String
     , countryid : String
     , comment : String
+    , prefixes : List String
     }
 
 type alias SortSetup = {
@@ -55,15 +56,20 @@ type alias QSLSortModel = {
 countrydecoder : JDEC.Decoder Country
 countrydecoder =
   map3
-    (\a b c -> Country a b c)
+    (\a b c -> Country a b c )
     (field "name" string)
     (field "id" string)
     (maybe (field "sort" string))
 
+createPrefixList: String -> List String
+createPrefixList inp =
+    String.split "-" inp
+    
+
 combinerdecoder : JDEC.Decoder Combiner
 combinerdecoder =
   map3
-    (\a b c -> Combiner a b c)
+    (\a b c -> Combiner a b c (createPrefixList a))
     (field "callsignpattern" string)
     (field "countryid" string)
     (field "comment" string)
@@ -202,6 +208,7 @@ getSetupView setup =
                                         td [] [text entry.callsignpattern]
                                         , td [] [text entry.countryid]
                                         , td [] [text entry.comment]
+                                        , td [] [text (String.join "," entry.prefixes)]
                                     ]
                             )
                             x.combinerlist )
