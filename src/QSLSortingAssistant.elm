@@ -178,7 +178,7 @@ update msg model =
         GETSORTSETUP (Ok setup) ->
             ({model | sortSetup = Just setup, setupError = Nothing } , Cmd.none)
         GETSORTSETUP (Err _) ->
-            ({model | setupError = Just "unable to load ceptlist from server" }, Cmd.none)
+            ({model | setupError = Just "really unable to load ceptlist from server" }, Cmd.none)
         GETDATA ->
             (model, initialCmd)
 
