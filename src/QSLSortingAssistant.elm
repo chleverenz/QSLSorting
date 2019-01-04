@@ -100,7 +100,7 @@ initialData =
         , sortSetup = Nothing
         , setupError = Nothing
         , csvalid = 0
-        , version = "0.0.0.1"
+        , version = "0.0.0.2"
     }
     
 aSpceificClassDiv : String -> List (Html msg) -> Html msg
