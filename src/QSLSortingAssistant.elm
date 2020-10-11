@@ -63,7 +63,9 @@ countrydecoder =
 
 createPrefixList: String -> List String
 createPrefixList inp =
-    String.split "-" inp
+    inp
+    |> String.toLower
+    |> String.split "."
     
 
 combinerdecoder : JDEC.Decoder Combiner
@@ -171,13 +173,12 @@ update msg model =
                 ({ model | 
                     callSignList = List.append model.callSignList [CallsignEntry model.currentCallsign "" Nothing False]
                     , currentCallsign = ""
-                    , csvalid = (
-                       case (findCombinerEntry (getCombinerdata model.sortSetup) model.currentCallsign) of
+                    , csvalid = 
+                       case findCombinerEntry (getCombinerdata model.sortSetup) model.currentCallsign of
                             Nothing ->
                                 0
                             Just aList ->
                                 List.length aList
-                        )
                     } , Cmd.none)
             else
                 (model, Cmd.none)
